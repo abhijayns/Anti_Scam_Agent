@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anti-Scam Kṣemin | Intelligent Threat Detection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            color: var(--text-main);
+        }
+
+        .logo i {
+            color: var(--primary);
+            font-size: 2rem;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+
+        .logo-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .config-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 0.6rem 1.2rem;
+            border-radius: 12px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+
+        .config-btn:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        main {
+            display: grid;
+            gap: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .analyzer-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            color: var(--text-main);
+            font-size: 1rem;
+            resize: none;
+            transition: all 0.3s;
+            line-height: 1.6;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .analyze-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .analyze-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #results {
+            display: none;
+            margin-top: 3rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1.5rem;
+        }
+
+        .score-card {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 20px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+        }
+
+        .score-gauge {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .score-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 12px solid rgba(255, 255, 255, 0.05);
+            position: absolute;
+        }
+
+        .score-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 99px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-scam {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .status-safe {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent);
+        }
+
+        .details-card {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .details-header {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .scam-type {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .patterns-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .pattern-tag {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pattern-tag i {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Configuration Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 1rem;
+        }
+
+        .modal {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 0 50px rgba(99, 102, 241, 0.2);
+        }
+
+        .modal h2 {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .modal input {
+            width: 100%;
+            background: rgba(15, 23, 42, 1);
+            border: 1px solid var(--border);
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .save-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .cancel-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i data-lucide="shield-check"></i>
+                <div class="logo-text">
+                    <span>Kṣemin</span>
+                    <span class="logo-subtitle">क्षेमिन्</span>
+                </div>
+            </div>
+            <button class="config-btn" onclick="openModal()">
+                <i data-lucide="settings"></i>
+                API Settings
+            </button>
+        </header>
+
+        <main>
+            <section class="hero">
+                <h1>Stop Scams in Their Tracks</h1>
+                <p>Advanced AI-powered message analysis using the Scam-Triad heuristic to protect you from fraudulent
+                    communications.</p>
+            </section>
+
+            <section class="analyzer-card">
+                <div class="input-group">
+                    <textarea id="messageInput"
+                        placeholder="Paste the suspicious message here... (e.g., 'Your account is blocked, update KYC now')"></textarea>
+                </div>
+                <button id="analyzeBtn" class="analyze-btn" onclick="analyzeMessage()">
+                    <i data-lucide="zap"></i>
+                    Analyze Message
+                </button>
+            </section>
+
+            <section id="results">
+                <div class="results-grid">
+                    <div class="score-card">
+                        <div class="score-gauge">
+                            <div class="score-circle"></div>
+                            <span class="score-value" id="scoreValue">0</span>
+                        </div>
+                        <span id="threatStatus" class="status-badge">LOW RISK</span>
+                    </div>
+
+                    <div class="details-card">
+                        <div class="details-header">
+                            <i data-lucide="info"></i>
+                            Analysis Details
+                        </div>
+                        <span id="scamType" class="scam-type">Pending Analysis...</span>
+
+                        <div class="details-header">
+                            <i data-lucide="fingerprint"></i>
+                            Detected Indicators
+                        </div>
+                        <div id="patternsList" class="patterns-list">
+                            <!-- Patterns will be injected here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal">
+            <h2><i data-lucide="database"></i> API Configuration</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.9rem;">
+                Enter the URL of your hosted Anti-Scam Agent API (e.g., your Render address).
+            </p>
+            <input type="text" id="apiUrl" placeholder="https://your-api.onrender.com" value="http://localhost:8000">
+            <div class="modal-actions">
+                <button class="modal-btn cancel-btn" onclick="closeModal()">Cancel</button>
+                <button class="modal-btn save-btn" onclick="saveConfig()">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Load configuration
+        let config = {
+            apiUrl: localStorage.getItem('kshemin_api_url') || 'http://localhost:8000'
+        };
+        document.getElementById('apiUrl').value = config.apiUrl;
+
+        function openModal() {
+            document.getElementById('modalOverlay').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+        }
+
+        function saveConfig() {
+            const url = document.getElementById('apiUrl').value.replace(/\/$/, '');
+            localStorage.setItem('kshemin_api_url', url);
+            config.apiUrl = url;
+            closeModal();
+            alert('Settings saved successfully!');
+        }
+
+        async function analyzeMessage() {
+            const text = document.getElementById('messageInput').value.trim();
+            if (!text) return alert('Please enter a message to analyze.');
+
+            const btn = document.getElementById('analyzeBtn');
+            const resultsSection = document.getElementById('results');
+
+            // UI Loading state
+            btn.disabled = true;
+            btn.innerHTML = '<div class="loading-spinner"></div> Analyzing...';
+            resultsSection.style.display = 'none';
+
+            try {
+                const response = await fetch(`${config.apiUrl}/analyze`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+
+                if (!response.ok) throw new Error('Failed to connect to API');
+
+                const data = await response.json();
+                displayResults(data);
+            } catch (error) {
+                alert(`Error: ${error.message}. Please check your API URL in settings.`);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i data-lucide="zap"></i> Analyze Message';
+                lucide.createIcons();
+            }
+        }
+
+        function displayResults(data) {
+            const resultsSection = document.getElementById('results');
+            const scoreValue = document.getElementById('scoreValue');
+            const threatStatus = document.getElementById('threatStatus');
+            const scamType = document.getElementById('scamType');
+            const patternsList = document.getElementById('patternsList');
+
+            // Format score (0-10)
+            const score = (data.confidence_score * 10).toFixed(1);
+            scoreValue.innerText = score;
+
+            // Gauge color/status
+            if (data.is_scam) {
+                threatStatus.innerText = 'HIGH RISK';
+                threatStatus.className = 'status-badge status-scam';
+                scoreValue.style.color = 'var(--danger)';
+            } else {
+                threatStatus.innerText = 'LOW RISK';
+                threatStatus.className = 'status-badge status-safe';
+                scoreValue.style.color = 'var(--accent)';
+            }
+
+            // Scam type
+            scamType.innerText = data.scam_type.replace(/_/g, ' ').toUpperCase();
+
+            // Patterns
+            patternsList.innerHTML = '';
+            if (data.detected_patterns && data.detected_patterns.length > 0) {
+                data.detected_patterns.forEach(p => {
+                    const tag = document.createElement('div');
+                    tag.className = 'pattern-tag';
+                    tag.innerHTML = `<i data-lucide="alert-triangle"></i> ${p.replace(/_/g, ' ')}`;
+                    patternsList.appendChild(tag);
+                });
+            } else {
+                patternsList.innerHTML = '<span style="color: var(--text-muted)">No specific patterns detected</span>';
+            }
+
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+            lucide.createIcons();
+        }
+    </script>
+</body>
+
+</html>
